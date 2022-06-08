@@ -28,7 +28,7 @@ namespace TryTwo
         {
             // services.AddControllersWithViews();
             string connection = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<bakaContext>(options => options.UseSqlServer(connection));
+            services.AddDbContext<DBContext>(options => options.UseSqlServer(connection));
 
             // установка конфигурации подключения
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

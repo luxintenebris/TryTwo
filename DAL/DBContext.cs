@@ -6,12 +6,12 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace DAL
 {
-    public partial class bakaContext : DbContext
+    public partial class DBContext : DbContext
     {
-        public bakaContext()
+        public DBContext()
         {
         }
-        public bakaContext(DbContextOptions<bakaContext> options)
+        public DBContext(DbContextOptions<DBContext> options)
             : base(options)
         {
             Database.EnsureCreated();

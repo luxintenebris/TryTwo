@@ -16,15 +16,16 @@ namespace WebApplication7.Controllers
 {
     public class AccountController : Controller
     {
-        private bakaContext db;
+        private DBContext db;
 
-        public AccountController(bakaContext context)
+        public AccountController(DBContext context)
         {
             db = context;
         }
         [HttpGet]
         public IActionResult Login()
         {
+            System.Diagnostics.Debug.WriteLine("I am Account/Login/Get");
             return View();
         }
 
@@ -42,22 +43,11 @@ namespace WebApplication7.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginModel model)
         {
+            System.Diagnostics.Debug.WriteLine("I am Account/Login/Post");
             if (ModelState.IsValid)
             {
-                
-                foreach (var uber in db.Users)
-                {
-                    string str = "";
-                    foreach (var byt in uber.Password)
-                    {
-                        str += byt;
-                    }
-                    System.Diagnostics.Debug.WriteLine(str);
-                    System.Diagnostics.Debug.WriteLine(uber.Id);
-                    System.Diagnostics.Debug.WriteLine(uber.Name);
-                    System.Diagnostics.Debug.WriteLine(uber.Total);
-                }
-                Users user = db.Users.First(u => u.Name == model.Name && u.Password.SequenceEqual(GetStringHash(model.Password)));
+                Users user = db.Users.First(u => u.Name == model.Name 
+                                                 && u.Password.SequenceEqual(GetStringHash(model.Password)));
                 if (user != null)
                 {
                     await Authenticate(model.Name); // аутентификация
@@ -68,6 +58,22 @@ namespace WebApplication7.Controllers
             }
             return View(model);
         }
+
+        private void DebugUserOutput()
+        {
+            foreach (var anotherUser in db.Users)
+            {
+                string str = "";
+                foreach (var byt in anotherUser.Password)
+                {
+                    str += byt;
+                }
+                System.Diagnostics.Debug.WriteLine(str);
+                System.Diagnostics.Debug.WriteLine(anotherUser.Id);
+                System.Diagnostics.Debug.WriteLine(anotherUser.Name);
+            }
+        }
+
         [HttpGet]
         public IActionResult Register()
         {

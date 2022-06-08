@@ -21,7 +21,7 @@ namespace DAL
         public void Registration(Entity_new.Authorization auth)
         {
 
-            using (bakaContext data = new bakaContext())
+            using (DBContext data = new DBContext())
             {
                 data.Users.Add(new Users()
                 {
