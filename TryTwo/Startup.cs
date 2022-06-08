@@ -65,6 +65,9 @@ namespace TryTwo
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Account}/{action=Login}/{id?}");
+                endpoints.MapControllerRoute(
+                    name: "game",
+                    pattern: "{controller=Battleships}/{action=Index}/{id?}");
             });
         }
     }

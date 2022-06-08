@@ -10,3 +10,4 @@ C:\Users\Nami\source\repos\TryTwo\Entity\obj\Debug\netcoreapp3.1\Entity.csproj.C
 C:\Users\Nami\source\repos\TryTwo\Entity\obj\Debug\netcoreapp3.1\Entity.dll
 C:\Users\Nami\source\repos\TryTwo\Entity\obj\Debug\netcoreapp3.1\Entity.pdb
 C:\Users\Nami\source\repos\TryTwo\Entity\obj\Debug\netcoreapp3.1\Entity.genruntimeconfig.cache
+C:\Users\Nami\source\repos\TryTwo\Entity\obj\Debug\netcoreapp3.1\Entity.csproj.AssemblyReference.cache

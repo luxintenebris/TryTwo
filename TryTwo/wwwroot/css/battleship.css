@@ -1,0 +1,55 @@
+*,
+*::before,
+*::after {
+    box-sizing: content-box;
+}
+
+html {
+    line-height: 1.15;
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+}
+body {
+    margin: 0;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #333;
+    background-color: #98FB98;
+}
+
+#gameArea{
+    margin: 0 auto;
+    max-width: 600px;
+    padding: 15px;
+}
+#gameArea .pcGameArea, #gameArea .userGameArea{
+    width: 50%;
+   
+    margin: 0 0 15px 0;
+    padding:0;
+    display: block;
+    margin-bottom: 20px;
+}
+#gameArea .gameField{
+    margin: 5px 15px 0 0;
+    display: block;
+    padding:0;
+}
+#gameArea .gameField div{
+    margin: -1px;
+    display: block;
+    position: relative;
+    float: left;
+    background-color: #fcfcfc;
+    border: 1px solid #a7ddf5;
+    text-align: center;
+    color:#8B0000;
+}
+#gameArea .gameField div .badge{
+    font-size: 2em;
+    color: #F44336;
+}
+#gameArea .gameField .ship{
+    background-color: #2E8B57   ;
+}

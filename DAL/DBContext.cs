@@ -19,6 +19,7 @@ namespace DAL
         }
 
         public virtual DbSet<Users> Users { get; set; }
+        public virtual DbSet<OpenGames> OpenGames { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

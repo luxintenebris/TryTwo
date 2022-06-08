@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DAL;
+using Entity;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -10,6 +12,23 @@ namespace TryTwo.Controllers
     public class BattleshipsController : Controller
     {        
         public ActionResult Index()
+        {
+            return View();
+        }
+
+        public List<OpenGamesWithPlayer> LobbyGames()
+        {
+            var db = new DBContext();
+            var openGames = db.OpenGames;
+            var users = db.Users;
+            var openGamesWithUsers =
+                openGames.Join(users, x => x.Player1, y => y.Id,
+                               (g, u) => new OpenGamesWithPlayer 
+                                         { GameID = g.GameID, Player1Name = u.Name, Started = g.Started });
+            return openGamesWithUsers.OrderBy(x => x.GameID).Where(x => !x.Started).ToList();
+        }
+
+        public ActionResult Lobby()
         {
             return View();
         }
