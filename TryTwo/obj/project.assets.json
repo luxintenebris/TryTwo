@@ -2672,24 +2672,6 @@
           "lib/netstandard1.3/System.Xml.XmlSerializer.dll": {}
         }
       },
-      "BL/1.0.0": {
-        "type": "project",
-        "framework": ".NETCoreApp,Version=v3.1",
-        "dependencies": {
-          "DAL": "1.0.0",
-          "Entity": "1.0.0",
-          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "5.0.0",
-          "Microsoft.EntityFrameworkCore": "5.0.0",
-          "Microsoft.EntityFrameworkCore.SqlServer": "5.0.0",
-          "Microsoft.VisualStudio.Web.CodeGeneration.Design": "3.1.5"
-        },
-        "compile": {
-          "bin/placeholder/BL.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/BL.dll": {}
-        }
-      },
       "DAL/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v3.1",
@@ -8797,11 +8779,6 @@
         "system.xml.xmlserializer.nuspec"
       ]
     },
-    "BL/1.0.0": {
-      "type": "project",
-      "path": "../BL/BL.csproj",
-      "msbuildProject": "../BL/BL.csproj"
-    },
     "DAL/1.0.0": {
       "type": "project",
       "path": "../DAL/DAL.csproj",
@@ -8815,7 +8792,7 @@
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v3.1": [
-      "BL >= 1.0.0",
+      "DAL >= 1.0.0",
       "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 5.0.0",
       "Microsoft.EntityFrameworkCore >= 5.0.0",
       "Microsoft.EntityFrameworkCore.Design >= 5.0.0",
@@ -8851,8 +8828,8 @@
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
           "projectReferences": {
-            "C:\\Users\\Nami\\source\\repos\\TryTwo\\BL\\BL.csproj": {
-              "projectPath": "C:\\Users\\Nami\\source\\repos\\TryTwo\\BL\\BL.csproj"
+            "C:\\Users\\Nami\\source\\repos\\TryTwo\\DAL\\DAL.csproj": {
+              "projectPath": "C:\\Users\\Nami\\source\\repos\\TryTwo\\DAL\\DAL.csproj"
             }
           }
         }

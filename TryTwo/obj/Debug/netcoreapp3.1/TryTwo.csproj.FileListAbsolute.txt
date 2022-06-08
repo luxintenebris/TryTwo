@@ -50,9 +50,7 @@ C:\Users\Nami\source\repos\TryTwo\TryTwo\bin\Debug\netcoreapp3.1\runtimes\win-x8
 C:\Users\Nami\source\repos\TryTwo\TryTwo\bin\Debug\netcoreapp3.1\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.pdb
 C:\Users\Nami\source\repos\TryTwo\TryTwo\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Runtime.Caching.dll
 C:\Users\Nami\source\repos\TryTwo\TryTwo\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
-C:\Users\Nami\source\repos\TryTwo\TryTwo\bin\Debug\netcoreapp3.1\BL.dll
 C:\Users\Nami\source\repos\TryTwo\TryTwo\bin\Debug\netcoreapp3.1\DAL.dll
-C:\Users\Nami\source\repos\TryTwo\TryTwo\bin\Debug\netcoreapp3.1\BL.pdb
 C:\Users\Nami\source\repos\TryTwo\TryTwo\bin\Debug\netcoreapp3.1\DAL.pdb
 C:\Users\Nami\source\repos\TryTwo\TryTwo\obj\Debug\netcoreapp3.1\TryTwo.csproj.AssemblyReference.cache
 C:\Users\Nami\source\repos\TryTwo\TryTwo\obj\Debug\netcoreapp3.1\TryTwo.GeneratedMSBuildEditorConfig.editorconfig

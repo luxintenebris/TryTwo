@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace DAL
+namespace Entity
 {
     public partial class Users
     {

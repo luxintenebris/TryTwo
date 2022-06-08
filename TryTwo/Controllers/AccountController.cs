@@ -7,10 +7,11 @@ using WebApplication7.ViewModels; // пространство имен моде�
 using TryTwo.Models; // пространство имен UserContext и класса User
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using DAL;
 using System.Security.Cryptography;
 using System.Text;
 using System.Linq;
+using DAL;
+using Entity;
 
 namespace WebApplication7.Controllers
 {

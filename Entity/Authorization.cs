@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Entity_new
+namespace Entity
 {
     public class Authorization
     {

@@ -3,13 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31702.278
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TryTwo", "TryTwo\TryTwo.csproj", "{BDA0F64F-6339-426F-8791-CCEC376B0777}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TryTwo", "TryTwo\TryTwo.csproj", "{BDA0F64F-6339-426F-8791-CCEC376B0777}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL", "DAL\DAL.csproj", "{1639A07C-EC72-4094-8FD0-2E7BD686C864}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL", "DAL\DAL.csproj", "{1639A07C-EC72-4094-8FD0-2E7BD686C864}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BL", "BL\BL.csproj", "{9A1C97EF-08BA-40F8-AFDB-A6016EF29C8E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entity", "Entity\Entity.csproj", "{28A849B5-CA5B-4C7B-B6A9-C75C9F5B3400}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entity", "Entity\Entity.csproj", "{28A849B5-CA5B-4C7B-B6A9-C75C9F5B3400}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,10 +23,6 @@ Global
 		{1639A07C-EC72-4094-8FD0-2E7BD686C864}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1639A07C-EC72-4094-8FD0-2E7BD686C864}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1639A07C-EC72-4094-8FD0-2E7BD686C864}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9A1C97EF-08BA-40F8-AFDB-A6016EF29C8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9A1C97EF-08BA-40F8-AFDB-A6016EF29C8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9A1C97EF-08BA-40F8-AFDB-A6016EF29C8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9A1C97EF-08BA-40F8-AFDB-A6016EF29C8E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{28A849B5-CA5B-4C7B-B6A9-C75C9F5B3400}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{28A849B5-CA5B-4C7B-B6A9-C75C9F5B3400}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28A849B5-CA5B-4C7B-B6A9-C75C9F5B3400}.Release|Any CPU.ActiveCfg = Release|Any CPU
