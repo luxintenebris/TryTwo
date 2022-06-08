@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace TryTwo.Controllers
 {
@@ -13,7 +14,49 @@ namespace TryTwo.Controllers
     {        
         public ActionResult Index()
         {
-            return View();
+            if (User.Identity.IsAuthenticated)
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Index", "Account");
+            }
+            
+        }
+
+        public class UserIDName
+        {
+            public int ID { get; set; }
+            public string username { get; set; }
+        }
+
+        public async Task<ActionResult> CreateGame()
+        {
+            var db = new DBContext();
+
+            var userLogin = User.FindFirstValue(ClaimTypes.Name);
+            var user = db.Users.First(x => x.Name == userLogin);
+
+            var sameGame = db.OpenGames.FirstOrDefault(x => x.Player1 == user.Id);
+            if (sameGame == null)
+            {
+                db.OpenGames.Add(new OpenGames { Player1 = user.Id, Started = false });
+                await db.SaveChangesAsync();
+
+                System.Diagnostics.Debug.WriteLine("..Game created..");
+            }
+            
+            return RedirectToAction(nameof(Lobby));
+        }
+
+        public UserIDName CurrentUser()
+        {
+            return new UserIDName
+            {
+                ID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)),
+                username = User.FindFirstValue(ClaimTypes.Name)
+            };
         }
 
         public List<OpenGamesWithPlayer> LobbyGames()
@@ -30,6 +73,12 @@ namespace TryTwo.Controllers
 
         public ActionResult Lobby()
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Account");
+            }
+
+            ViewBag.username = User.FindFirstValue(ClaimTypes.Name);
             return View();
         }
 

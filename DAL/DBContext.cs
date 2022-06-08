@@ -21,6 +21,10 @@ namespace DAL
         public virtual DbSet<Users> Users { get; set; }
         public virtual DbSet<OpenGames> OpenGames { get; set; }
 
+        public void CreateGame(Users user)
+        {
+            OpenGames.Add(new Entity.OpenGames { });
+        }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)

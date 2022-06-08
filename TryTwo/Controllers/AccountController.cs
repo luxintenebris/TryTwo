@@ -26,7 +26,7 @@ namespace WebApplication7.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            System.Diagnostics.Debug.WriteLine("I am Account/Login/Get");
+            //System.Diagnostics.Debug.WriteLine("I am Account/Login/Get");
             return View();
         }
 
@@ -44,7 +44,7 @@ namespace WebApplication7.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginModel model)
         {
-            System.Diagnostics.Debug.WriteLine("I am Account/Login/Post");
+            //System.Diagnostics.Debug.WriteLine("I am Account/Login/Post");
             if (ModelState.IsValid)
             {
                 Users user = db.Users.First(u => u.Name == model.Name 
@@ -53,7 +53,7 @@ namespace WebApplication7.Controllers
                 {
                     await Authenticate(model.Name); // аутентификация
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Lobby", "Battleships");
                 }
                 ModelState.AddModelError("", "Некорректные логин и(или) пароль");
             }
@@ -95,7 +95,7 @@ namespace WebApplication7.Controllers
 
                     await Authenticate(model.Name); // аутентификация
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Lobby", "Battleship");
                 }
                 else
                     ModelState.AddModelError("", "Некорректные логин и(или) пароль");
