@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <Folder Include="Scripts\" />
+    <Folder Include="Views\Game\" />
   </ItemGroup>
 
 </Project>

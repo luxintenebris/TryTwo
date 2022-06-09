@@ -65,6 +65,10 @@
          * Вызывает функции, которые вставляют базовую html разметку
          * нужную для игры
          */
+        setPlayerSession(playerID, sessionID) {
+            this.playerID = playerID;
+            this.sessionID = sessionID;
+        },
         run: function(){
             this.createToolbar();
             this.createGameFields();
@@ -107,12 +111,12 @@
             this.userInfo.innerHTML = this.userName;
             
             if (this.multiplayer) {
-                console.log("Multiplayer mode")
-                return;
+                this._userShipsMap = this.requestUserShipMap();
             }
             else {
+                //this._userShipsMap = this.generateRandomShipMap();
                 this._pcShipsMap = this.generateRandomShipMap();
-                this._userShipsMap = this.generateRandomShipMap();
+                this._userShipsMap = this.requestUserShipMap();
                 this._pcShotMap = this.generateShotMap();
             }
             this._userHits = 0;
@@ -121,14 +125,43 @@
             this._gameStopped = false;
             this._pcGoing = false;
 
-            this.drawGamePoints();
+            this.drawGamePoints(this._pcShipsMap);
             this.updateToolbar();
+        },
+
+        requestUserShipMap: function () {
+            var map = [];
+            var game = this;
+            const request = new XMLHttpRequest();
+            request.addEventListener("load",
+                function (event) {
+                    const data = JSON.parse(request.responseText);
+
+                    for (var yPoint = -1; yPoint < (game.gameFieldBorderY.length + 1); yPoint++) {
+                        for (var xPoint = -1; xPoint < (game.gameFieldBorderX.length + 1); xPoint++) {
+                            if (!map[yPoint]) {
+                                map[yPoint] = [];
+                            }
+                            map[yPoint][xPoint] = game.CELL_EMPTY;
+                        }
+                    }
+
+                    data.forEach(message => {
+                        map[message.y][message.x] = game.CELL_WITH_SHIP;
+                    });
+                });
+            const url = "GetShips?playerID=" + this.playerID + "&sessionID=" + this.sessionID;
+            console.log(url);
+            request.open("GET", url, false);
+            request.send();
+            console.log(map);
+            return map;
         },
 
         /**
          * Создание/обновление ячеей в игровых полях
          */
-        drawGamePoints: function(){
+        drawGamePoints: function () {
             for(var yPoint=0;yPoint<this.gameFieldBorderY.length; yPoint++){
                 for(var xPoint=0;xPoint<this.gameFieldBorderX.length; xPoint++){
                     var pcPointBlock = this.getOrCreatePointBlock(yPoint, xPoint);

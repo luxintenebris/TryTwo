@@ -20,6 +20,8 @@ namespace DAL
 
         public virtual DbSet<Users> Users { get; set; }
         public virtual DbSet<OpenGames> OpenGames { get; set; }
+        public virtual DbSet<GameSession> GameSessions { get; set; }
+        public virtual DbSet<PlayerShips> PlayerShips { get; set; }
 
         public void CreateGame(Users user)
         {
@@ -47,6 +49,11 @@ namespace DAL
                     .IsRequired()
                     .HasMaxLength(500)
                     .IsFixedLength(true);
+            });
+
+            modelBuilder.Entity<PlayerShips>(entity =>
+            {
+                entity.HasKey(c => new { c.gameSessionId, c.player, c.x, c.y });
             });
 
             OnModelCreatingPartial(modelBuilder);

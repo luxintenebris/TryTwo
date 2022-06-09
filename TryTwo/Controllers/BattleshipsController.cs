@@ -12,23 +12,43 @@ namespace TryTwo.Controllers
 {
     public class BattleshipsController : Controller
     {        
-        public ActionResult Index()
-        {
-            if (User.Identity.IsAuthenticated)
-            {
-                return View();
-            }
-            else
-            {
-                return RedirectToAction("Index", "Account");
-            }
-            
-        }
-
         public class UserIDName
         {
             public int ID { get; set; }
             public string username { get; set; }
+        }
+
+        // GET: BattleshipsController/JoinGame/5
+        public ActionResult JoinGame(int id)
+        {
+            int gameID = id;
+            System.Diagnostics.Debug.WriteLine("..Joining game.. " + gameID);
+            var db = new DBContext();
+            var userLogin = User.FindFirstValue(ClaimTypes.Name);
+            var user = db.Users.First(x => x.Name == userLogin);
+            var openGame = db.OpenGames.FirstOrDefault(x => x.GameID == gameID);
+            if (openGame != null && openGame.Player1 != user.Id)
+            {
+                return StartGame(p1: openGame.Player1, p2: user.Id, openGame);
+            }
+            return RedirectToAction(nameof(Lobby));
+        }
+
+        private ActionResult StartGame(int p1, int p2, OpenGames lobbyRoom)
+        {
+            // РАСКОММЕНТИРУЙ
+
+            //var db = new DBContext();
+            //db.OpenGames.Remove(lobbyRoom);
+            //db.SaveChangesAsync();
+
+            return RedirectToAction("CreateGame", "Game", new { player1ID = p1, player2ID = p2 });
+            //return RedirectToAction("WaitingRoom", "Game", new { player1ID=p1, player2ID=p2 });
+        }
+
+        private ActionResult WaitingRoom()
+        {
+            return View();
         }
 
         public async Task<ActionResult> CreateGame()
@@ -47,7 +67,7 @@ namespace TryTwo.Controllers
                 System.Diagnostics.Debug.WriteLine("..Game created..");
             }
             
-            return RedirectToAction(nameof(Lobby));
+            return RedirectToAction("WaitingRoom", "Battleships");
         }
 
         public UserIDName CurrentUser()

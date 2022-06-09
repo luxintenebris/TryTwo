@@ -95,7 +95,7 @@ namespace WebApplication7.Controllers
 
                     await Authenticate(model.Name); // аутентификация
 
-                    return RedirectToAction("Lobby", "Battleship");
+                    return RedirectToAction("Lobby", "Battleships");
                 }
                 else
                     ModelState.AddModelError("", "Некорректные логин и(или) пароль");
