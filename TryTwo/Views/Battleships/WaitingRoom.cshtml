@@ -4,3 +4,11 @@
 @{
 }
 <h2>Ожидаем второго игрока...</h2>
+@section Scripts {
+    <script src="~/js/waitingRoomPinger.js"></script>
+    <script>
+        window.onload = function () {
+            pinger(@ViewBag.lobbyID, @ViewBag.playerID);
+        };
+    </script>
+}

@@ -10,6 +10,6 @@ namespace Entity
         [Key]
         public int GameID { get; set; }
         public int Player1 { get; set; }
-        public bool Started { get; set; }
+        public int sessionID { get; set; } = -1;
     }
 }

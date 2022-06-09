@@ -29,7 +29,7 @@ namespace TryTwo.Models
             }
         }
 
-        public async Task<ActionResult> CreateGame(int player1ID = -1, int player2ID = -1)
+        public async Task<ActionResult> CreateGame(int player1ID, int player2ID, int roomID)
         {
             var db = new DBContext();
             int pointsToWin = HitsToWin();
@@ -44,6 +44,11 @@ namespace TryTwo.Models
             await db.SaveChangesAsync();
 
             var sessionID = gameSessionEntry.Entity.sessionId;
+            // необходимо т.к. БД теряет связь с предыдущим объектом
+            var lobbyRoom = db.OpenGames.First(x => x.GameID == roomID);
+            lobbyRoom.sessionID = sessionID;
+            db.OpenGames.Update(lobbyRoom);
+            await db.SaveChangesAsync();
             var p1Map = CreateRandomShipMap();
             AddShipsToDatabase(p1Map, player1ID, sessionID);
             var p2Map = CreateRandomShipMap();
@@ -102,7 +107,7 @@ namespace TryTwo.Models
             {
                 var xPoint = random.Next(fieldW);
                 var yPoint = random.Next(fieldH);
-                System.Diagnostics.Debug.WriteLine($"For ship {shipConfiguration[0].pointCount} try point {xPoint} {yPoint}");
+                //System.Diagnostics.Debug.WriteLine($"For ship {shipConfiguration[0].pointCount} try point {xPoint} {yPoint}");
                 if (IsPointFree(map, xPoint, yPoint))
                 {
                     if (CanPutHorizontal(map, xPoint, yPoint, shipConfiguration[0].pointCount, fieldW))

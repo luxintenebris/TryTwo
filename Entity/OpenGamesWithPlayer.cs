@@ -8,7 +8,7 @@ namespace Entity
     {
         public int GameID { get; set; }
         public string Player1Name { get; set; }
-        public bool Started { get; set; }
+        public int sessionID { get; set; } = -1;
 
         //public OpenGamesWithPlayer(int gameID, string player1Name, bool started)
         //{

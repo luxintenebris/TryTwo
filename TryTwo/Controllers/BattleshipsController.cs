@@ -42,12 +42,15 @@ namespace TryTwo.Controllers
             //db.OpenGames.Remove(lobbyRoom);
             //db.SaveChangesAsync();
 
-            return RedirectToAction("CreateGame", "Game", new { player1ID = p1, player2ID = p2 });
+            return RedirectToAction("CreateGame", "Game", new { player1ID = p1, player2ID = p2, roomID = lobbyRoom.GameID });
             //return RedirectToAction("WaitingRoom", "Game", new { player1ID=p1, player2ID=p2 });
         }
 
-        private ActionResult WaitingRoom()
+        public ActionResult WaitingRoom(int openGameID, int playerID)
         {
+            System.Diagnostics.Debug.WriteLine("Waiting in room " + openGameID);
+            ViewBag.lobbyID = openGameID;
+            ViewBag.playerID = playerID;
             return View();
         }
 
@@ -58,16 +61,23 @@ namespace TryTwo.Controllers
             var userLogin = User.FindFirstValue(ClaimTypes.Name);
             var user = db.Users.First(x => x.Name == userLogin);
 
+            int openRoomID;
             var sameGame = db.OpenGames.FirstOrDefault(x => x.Player1 == user.Id);
             if (sameGame == null)
             {
-                db.OpenGames.Add(new OpenGames { Player1 = user.Id, Started = false });
+                var room = db.OpenGames.Add(new OpenGames { Player1 = user.Id });
                 await db.SaveChangesAsync();
 
-                System.Diagnostics.Debug.WriteLine("..Game created..");
+                openRoomID = room.Entity.GameID;
+                System.Diagnostics.Debug.WriteLine($"..Room {openRoomID} created..");
+            }
+            else
+            {
+                openRoomID = sameGame.GameID;
+                System.Diagnostics.Debug.WriteLine($"..Room {openRoomID} found..");
             }
             
-            return RedirectToAction("WaitingRoom", "Battleships");
+            return RedirectToAction("WaitingRoom", "Battleships", new { openGameID = openRoomID, playerID = user.Id });
         }
 
         public UserIDName CurrentUser()
@@ -87,8 +97,18 @@ namespace TryTwo.Controllers
             var openGamesWithUsers =
                 openGames.Join(users, x => x.Player1, y => y.Id,
                                (g, u) => new OpenGamesWithPlayer 
-                                         { GameID = g.GameID, Player1Name = u.Name, Started = g.Started });
-            return openGamesWithUsers.OrderBy(x => x.GameID).Where(x => !x.Started).ToList();
+                                         { GameID = g.GameID, Player1Name = u.Name, sessionID = g.sessionID });
+            return openGamesWithUsers.OrderBy(x => x.GameID)
+                //.Where(x => x.sessionID == -1) TODO: В будущем вернуть!!
+                .ToList();
+        }
+
+        public int ActualGameID(int lobbyID)
+        {
+            var db = new DBContext();
+            var openGames = db.OpenGames;
+            var openGame = openGames.FirstOrDefault(x => x.GameID == lobbyID);
+            return openGame != null ? openGame.sessionID : -1;
         }
 
         public ActionResult Lobby()
@@ -100,53 +120,6 @@ namespace TryTwo.Controllers
 
             ViewBag.username = User.FindFirstValue(ClaimTypes.Name);
             return View();
-        }
-
-        // GET: BattleshipsController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: BattleshipsController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: BattleshipsController/Create
-        [HttpPost]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: BattleshipsController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: BattleshipsController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
         }
     }
 }

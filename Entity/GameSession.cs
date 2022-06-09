@@ -16,5 +16,6 @@ namespace Entity
         public int p2Hits { get; set; } = 0;
         public int p2HitsForWin { get; set; }
         public bool finished { get; set; } = false;
+        public int lobbyID { get; set; }
     }
 }
