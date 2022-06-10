@@ -113,7 +113,7 @@ namespace TryTwo.Models
             {
                 shipDamaged.hit = true;
                 if (session.playerTurn == 1) session.p1Hits++;
-                if (session.playerTurn == 2) session.p1Hits++;
+                if (session.playerTurn == 2) session.p2Hits++;
 
                 db.PlayerShips.Update(shipDamaged);
 
