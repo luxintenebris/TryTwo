@@ -6,13 +6,13 @@
 }
 
 <h1>Привет, @ViewBag.username!</h1>
-@{//<h3><i>#@ViewBag.id</i></h3>
-}
+<h3><i>Ваш счет: @ViewBag.wins:@ViewBag.loss</i></h3>
+
 <form asp-action="CreateGame" asp-controller="Battleships" asp-anti-forgery="true" method="post">
     <input type="submit" class="btn btn-primary" value="Создать игру"/>
 </form>
 
-<table>
+<table style="min-width: 40%">
     <thead>
         <tr>
             <td>Номер комнаты</td>

@@ -55,9 +55,11 @@
         this.pcGameField = null;
         this.userGameField = null;
 
+        this.pcLastHitX = -1;
+        this.pcLastHitY = -1;
         
         // Версия игры с сервером или локальная
-        this.multiplayer = false;
+        this.multiplayer = true;
     }
 
     BattleShipsGame.prototype = {
@@ -72,7 +74,6 @@
         run: function(){
             this.createToolbar();
             this.createGameFields();
-            
         },
         createToolbar: function(){
             this.toolbar = document.createElement('div');
@@ -123,10 +124,16 @@
             this._pcHits = 0;
             this._blockHeight = null;
             this._gameStopped = false;
-            this._pcGoing = false;
+            this._pcGoing = true;
 
-            this.drawGamePoints(this._pcShipsMap);
-            this.updateToolbar();
+            if (this.multiplayer) {
+                this.requestWhoseTurnAndInit();
+                this.getEnemyHitInterval();
+            }
+            else {
+                this.drawGamePoints(this._pcShipsMap);
+                this.updateToolbar();
+            }
         },
 
         requestUserShipMap: function () {
@@ -156,6 +163,68 @@
             request.send();
             console.log(map);
             return map;
+        },
+
+        requestWhoseTurnAndInit: function () {
+            const request = new XMLHttpRequest();
+            game = this;
+            request.addEventListener("load",
+                function (event) {
+                    const data = request.responseText;
+                    console.log(data);
+                    if (data === "true") {
+                        game._pcGoing = false;
+                    }
+                    else {
+                        game._pcGoing = true;
+                    }
+                    game.drawGamePoints(game._pcShipsMap);
+                    game.updateToolbar();
+                });
+            const url = "MyTurn?sessionID=" + this.sessionID + "&userID=" + this.playerID;
+            request.open("GET", url, false);
+            request.send();
+        },
+
+        getEnemyHitInterval: function () {
+            game = this;
+            setInterval(() => {
+                console.log("Check enemy hit? " + this.isPCGoing());
+                if (!this.isPCGoing()) return;
+                const request = new XMLHttpRequest();
+                url = "GetSessionInfo?sessionID=" + game.sessionID;
+                request.open("GET", url, true);
+                request.addEventListener("load", function (event) {
+                    var data = JSON.parse(request.responseText);
+                    //if (data.playerTurn === 1 && data.player1 === game.playerID
+                    //    || data.playerTurn === 2 && data.player2 === game.playerID) {
+                    //    console.log("Wrong turn. My turn!");
+                    //    game._pcGoing = false;
+                    //    game.updateToolbar();
+                    //}
+
+                    var dataShotX = -1;
+                    var dataShotY = -1;
+                    if (data.player1 === game.playerID) {
+                        dataShotX = data.lastP2HitX;
+                        dataShotY = data.lastP2HitY;
+                    }
+                    else {
+                        dataShotX = data.lastP1HitX;
+                        dataShotY = data.lastP1HitY;
+                    }
+                    // Были получены координаты нового выстрела
+                    if (dataShotX != game.pcLastHitX
+                        || dataShotY != game.pcLastHitY) {
+                        console.log(data);
+                        console.log("Logging:", game.playerID, dataShotX, dataShotY);
+                        game.pcLastHitX = dataShotX;
+                        game.pcLastHitY = dataShotY;
+                        game.pcFireResult(dataShotX, dataShotY);
+                    }
+                });
+                request.send()
+            }, 1000);
         },
 
         /**
@@ -311,7 +380,7 @@
          */
         isPointFree: function(map, xPoint, yPoint){
             if (this.multiplayer){
-                console.log("Multiplayer")
+                console.log("Не должно вызываться из мультиплеера!");
                 return null;
             }
             else {
@@ -408,7 +477,7 @@
             var y = firedEl.getAttribute('data-y');
             
             if (this.multiplayer) {
-
+                this.userFireRequest(x, y, firedEl);
             } else {
                 this.userFireLocal(x, y, firedEl);    
             }
@@ -416,16 +485,41 @@
             firedEl.onclick = null;
         },
 
-        userFireLocal: function(x, y, firedEl){
-            if(this._pcShipsMap[y][x] === this.CELL_EMPTY){
+        userFireLocal: function (x, y, firedEl) {
+            return this.userFireProcess(
+                this._pcShipsMap[y][x] === this.CELL_EMPTY,
+                firedEl);
+            
+        },
+
+        userFireRequest: function (x, y, firedEl) {
+            const request = new XMLHttpRequest();
+            game = this;
+            request.open("POST", "Shoot", true);
+            request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            const body = {
+                "sessionID": game.sessionID,
+                "x": parseInt(x),
+                "y": parseInt(y)
+            };
+            request.addEventListener("load", function () {
+                const result = request.response;
+                console.log("Firing", x, y, "->", result);
+                return game.userFireProcess(result != "true", firedEl);
+            });
+            request.send(JSON.stringify(body));
+        },
+
+        userFireProcess: function (isFail, firedEl) {
+            if (isFail) {
                 firedEl.innerHTML = this.getFireFailTemplate();
                 this.prepareToPcFire();
-            }else{
+            } else {
                 firedEl.innerHTML = this.getFireSuccessTemplate();
                 firedEl.setAttribute('class', 'ship');
                 this._userHits++;
                 this.updateToolbar();
-                if(this._userHits >= this._hitsForWin){
+                if (this._userHits >= this._hitsForWin) {
                     this.stopGame();
                 }
             }
@@ -443,9 +537,14 @@
         prepareToPcFire: function(){
             this._pcGoing = true;
             this.updateToolbar();
-            setTimeout(function(){
-                this.pcFire();
-            }.bind(this), this.pcDelay);
+            if (this.multiplayer) {
+                return; // В мультиплеере запросы делаются сами
+            }
+            else {
+                setTimeout(function () {
+                    this.pcFire();
+                }.bind(this), this.pcDelay);
+            }
         },
 
         /**
@@ -462,22 +561,33 @@
             // удаление чтобы не было выстрелов повторных
             this._pcShotMap.splice(randomShotIndex, 1);
 
-            var firedEl = document.getElementById(this.getPointBlockIdByCoords(randomShot.y, randomShot.x, 'user'));
-            if(this._userShipsMap[randomShot.y][randomShot.x] === this.CELL_EMPTY){
+            this.pcFireResult(randomShot.x, randomShot.y);
+        },
+
+        pcFireResult: function (x, y) {
+            var firedEl = document.getElementById(this.getPointBlockIdByCoords(y, x, 'user'));
+            //console.log(x, y, firedEl);
+            if (this._userShipsMap[y][x] === this.CELL_EMPTY) {
                 firedEl.innerHTML = this.getFireFailTemplate();
-            }else{
+                this._pcGoing = false;
+                console.log("Enemy miss", x, y)
+            } else {
                 firedEl.innerHTML = this.getFireSuccessTemplate();
                 this._pcHits++;
-                this.updateToolbar();
-                if(this._pcHits >= this._hitsForWin){
+                if (this._pcHits >= this._hitsForWin) {
                     this.stopGame();
-                }else{
-                    this.prepareToPcFire();
+                } else {
+                    if (this.multiplayer) {
+                        console.log("Enemy successful hit", x, y)
+                    }
+                    else {
+                        this.prepareToPcFire();
+                    }
                 }
             }
-            this._pcGoing = false;
             this.updateToolbar();
         },
+
         /**
          * Остановка игры
          */
@@ -500,8 +610,8 @@
         /**
          * Отображение текущей игровой ситуации в блоке
          */
-        updateToolbar: function(){
-            this.toolbar.innerHTML = 'Счет - ' + this._pcHits + ':' + this._userHits;
+        updateToolbar: function () {
+            this.toolbar.innerHTML = 'Счет - ' + this._userHits + ':' + this._pcHits;
             if(this.isGameStopped()){
                 if(this._userHits >= this._hitsForWin){
                     this.toolbar.innerHTML += '! Вы победили';

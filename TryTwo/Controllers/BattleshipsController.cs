@@ -62,7 +62,8 @@ namespace TryTwo.Controllers
             var user = db.Users.First(x => x.Name == userLogin);
 
             int openRoomID;
-            var sameGame = db.OpenGames.FirstOrDefault(x => x.Player1 == user.Id);
+            var sameGame = db.OpenGames.FirstOrDefault(
+                x => x.Player1 == user.Id && x.sessionID == -1);
             if (sameGame == null)
             {
                 var room = db.OpenGames.Add(new OpenGames { Player1 = user.Id });
@@ -99,7 +100,7 @@ namespace TryTwo.Controllers
                                (g, u) => new OpenGamesWithPlayer 
                                          { GameID = g.GameID, Player1Name = u.Name, sessionID = g.sessionID });
             return openGamesWithUsers.OrderBy(x => x.GameID)
-                //.Where(x => x.sessionID == -1) TODO: В будущем вернуть!!
+                .Where(x => x.sessionID == -1)
                 .ToList();
         }
 
@@ -118,7 +119,13 @@ namespace TryTwo.Controllers
                 return RedirectToAction("Index", "Account");
             }
 
-            ViewBag.username = User.FindFirstValue(ClaimTypes.Name);
+            var username = User.FindFirstValue(ClaimTypes.Name);
+            ViewBag.username = username;
+            var db = new DBContext();
+            var user = db.Users.First(x => x.Name == username);
+            ViewBag.wins = user.WinCount;
+            ViewBag.loss = user.LoseCount;
+
             return View();
         }
     }

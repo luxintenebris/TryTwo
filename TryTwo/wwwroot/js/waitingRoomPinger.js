@@ -8,7 +8,7 @@
                 var url = window.location.href;
                 var parentURL = url.split("/")[0]
                 window.location.replace(
-                    parentURL + `/Game/Index?playerID=${playerID}&sessionID=${request.responseText}`
+                    parentURL + `/Game/JoinHost?playerID=${playerID}&sessionID=${request.responseText}`
                 );
             }
         };
