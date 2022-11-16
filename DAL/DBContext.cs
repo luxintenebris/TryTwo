@@ -49,6 +49,9 @@ namespace DAL
                     .IsRequired()
                     .HasMaxLength(500)
                     .IsFixedLength(true);
+
+                entity.Property(e => e.Salt)
+                    .HasMaxLength(10);
             });
 
             modelBuilder.Entity<PlayerShips>(entity =>

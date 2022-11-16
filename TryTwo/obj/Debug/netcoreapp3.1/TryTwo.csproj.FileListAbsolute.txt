@@ -165,3 +165,4 @@ C:\Users\Nami\source\repos\TryTwo\TryTwo\obj\Debug\netcoreapp3.1\Razor\Views\Bat
 C:\Users\Nami\source\repos\TryTwo\TryTwo\bin\Debug\netcoreapp3.1\Views\Game\package.json
 C:\Users\Nami\source\repos\TryTwo\TryTwo\obj\Debug\netcoreapp3.1\Razor\Views\Game\Index.cshtml.g.cs
 C:\Users\Nami\source\repos\TryTwo\TryTwo\obj\Debug\netcoreapp3.1\Razor\Views\Battleships\WaitingRoom.cshtml.g.cs
+C:\Users\Nami\source\repos\TryTwo\TryTwo\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Authentication.JwtBearer.dll

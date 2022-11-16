@@ -1,7 +1,8 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\TryTwo"
   ],
-  "SelectedNode": "\\TryTwo.sln",
+  "SelectedNode": "\\TryTwo\\TryTwo.csproj",
   "PreviewInSolutionExplorer": false
 }

@@ -2,7 +2,60 @@
 
 <h2>Вход на сайт</h2>
 
-<form asp-action="Login" asp-controller="Account" asp-anti-forgery="true">
+<script>
+    const request = new XMLHttpRequest();
+    request.open("POST", "LOGIN", true);
+    window.onload = function () {
+        request.send();
+        attachFormSubmitEvent("loginForm");
+    };
+
+    function setCookie(name, value, days) {
+        var expires = "";
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
+
+    function formSubmit(event) {
+        var url = "/Account/Auth";
+        var request = new XMLHttpRequest();
+        request.open('POST', url, true);
+        request.onload = function (data) { // request successful
+            // we can use server response to our request now
+            console.log(request.responseText);
+            setCookie("Access-Token", data.Token, 0.00687222222);
+            setCookie("Request-Token", data.RefreshToken, 0.00687222222);
+        };
+
+        request.onerror = function () {
+            // request failed
+        };
+
+        request.send(new FormData(event.target)); // create FormData from form that triggered event
+        event.preventDefault();
+    }
+
+    // and you can attach form submit event like this for example
+    function attachFormSubmitEvent(formId) {
+        document.getElementById(formId).addEventListener("submit", formSubmit);
+    }
+
+@*    request.addEventListener("load", function () {
+        const result = request.response;
+        window.localStorage.setItem('access_token', accessToken);
+        window.localStorage.setItem('refresh_token', refreshToken);
+        return 
+    });
+
+    $.post(tokenUrl, loginData).then(navigateToEvent); and then: window.localStorage.setItem('access_token', token);*@
+</script>
+
+
+<form id="loginForm" target="dummyframe">
     <div class="validation" asp-validation-summary="ModelOnly"></div>
     <div>
         <div class="form-group">
@@ -21,3 +74,5 @@
         </div>
     </div>
 </form>
+
+<iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>

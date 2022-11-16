@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "UjJqIjQXoj8wHRdUSNDpWo+rXSjt9WAJlukWAUASfRAUpKJ63m3P5Syn57MggHjibtRB/8xB4/aA6LQu32jXgQ==",
+  "dgSpecHash": "+7CTT7mqy83U9JprgShucBxHunXBZqHgdN05474wNvdpZ5ZRkOV2Y0h2h/jjEeE8RD4zHZNKk+fysP/oiwRXww==",
   "success": true,
   "projectFilePath": "C:\\Users\\Nami\\source\\repos\\TryTwo\\DAL\\DAL.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Nami\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
+    "C:\\Users\\Nami\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\3.1.0\\microsoft.aspnetcore.authentication.jwtbearer.3.1.0.nupkg.sha512",
     "C:\\Users\\Nami\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\5.0.0\\microsoft.aspnetcore.cryptography.internal.5.0.0.nupkg.sha512",
     "C:\\Users\\Nami\\.nuget\\packages\\microsoft.aspnetcore.cryptography.keyderivation\\5.0.0\\microsoft.aspnetcore.cryptography.keyderivation.5.0.0.nupkg.sha512",
     "C:\\Users\\Nami\\.nuget\\packages\\microsoft.aspnetcore.html.abstractions\\2.2.0\\microsoft.aspnetcore.html.abstractions.2.2.0.nupkg.sha512",

@@ -12,16 +12,22 @@ using System.Text;
 using System.Linq;
 using DAL;
 using Entity;
+using System;
+using System.Net;
+using TryTwo.Services;
 
 namespace WebApplication7.Controllers
 {
     public class AccountController : Controller
     {
         private DBContext db;
+        private readonly ITokenService _tokenService;
 
-        public AccountController(DBContext context)
+
+        public AccountController(DBContext context, ITokenService tokenService)
         {
             db = context;
+            _tokenService = tokenService;
         }
         [HttpGet]
         public IActionResult Login()
@@ -37,27 +43,44 @@ namespace WebApplication7.Controllers
             if (s == null)
                 return null;
             byte[] hash = hashAlgo.ComputeHash(Encoding.Unicode.GetBytes(s));
+            Array.Resize(ref hash, 500);
             return hash;
         }
 
+        private static string BytesToStr(byte[] bytes)
+        {
+            return bytes.ToString();
+        }
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginModel model)
+        public async Task<AuthenticatedResponse> Auth(LoginModel model)
         {
             //System.Diagnostics.Debug.WriteLine("I am Account/Login/Post");
             if (ModelState.IsValid)
             {
-                Users user = db.Users.First(u => u.Name == model.Name 
-                                                 && u.Password.SequenceEqual(GetStringHash(model.Password)));
-                if (user != null)
+                Users user = db.Users.FirstOrDefault(u => u.Name == model.Name);
+                if (user.Password.SequenceEqual(
+                    GetStringHash((user.Salt != null ? user.Salt.ToString() : "") + model.Password)))
                 {
-                    await Authenticate(model.Name); // аутентификация
-
-                    return RedirectToAction("Lobby", "Battleships");
+                    HttpContext.Response.StatusCode = (int)HttpStatusCode.OK;
+                    var authenticatedTokens = await Authenticate(model.Name, user); // аутентификация
+                    HttpContext.Response.Cookies.Append("Access-Token", authenticatedTokens.Token, new Microsoft.AspNetCore.Http.CookieOptions
+                    {
+                        Expires = DateTime.Now.AddMinutes(10),
+                        HttpOnly = true,
+                        // every othe options like path , ...
+                    });
+                    HttpContext.Response.Cookies.Append("Request-Token", authenticatedTokens.RefreshToken, new Microsoft.AspNetCore.Http.CookieOptions
+                    {
+                        Expires = DateTime.Now.AddMinutes(10),
+                        HttpOnly = true,
+                        // every othe options like path , ...
+                    });
+                    return authenticatedTokens;
                 }
-                ModelState.AddModelError("", "Некорректные логин и(или) пароль");
             }
-            return View(model);
+            HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+            return null;
         }
 
         private void DebugUserOutput()
@@ -81,29 +104,43 @@ namespace WebApplication7.Controllers
             return View();
         }
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterModel model)
         {
             if (ModelState.IsValid)
             {
                 Users user = await db.Users.FirstOrDefaultAsync(u => u.Name == model.Name);
+
                 if (user == null)
                 {
+                    Random rnd = new Random();
                     // + пользователя в бд
-                    db.Users.Add(new Users { Name = model.Name, Password = GetStringHash(model.Password) });
+                    var salt = new byte[10];
+                    rnd.NextBytes(salt);
+                    user = new Users
+                    {
+                        Name = model.Name,
+                        Password = GetStringHash(salt.ToString() + model.Password),
+                        Salt = salt
+                    };
+                    db.Users.Add(user);
                     await db.SaveChangesAsync();
 
-                    await Authenticate(model.Name); // аутентификация
+                    HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
+                    var authenticatedTokens = await Authenticate(model.Name, user); // аутентификация
+                    return Created("" , authenticatedTokens);
 
-                    return RedirectToAction("Lobby", "Battleships");
+                    // return RedirectToAction("Lobby", "Battleships");
                 }
                 else
-                    ModelState.AddModelError("", "Некорректные логин и(или) пароль");
+                {
+                    HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    ModelState.AddModelError("", "Некорректные логин и(или) пароль"); 
+                }
             }
             return View(model);
         }
 
-        private async Task Authenticate(string userName)
+        private async Task<AuthenticatedResponse> Authenticate(string userName, Users user)
         {
             // создаем один claim
             var claims = new List<Claim>
@@ -113,7 +150,15 @@ namespace WebApplication7.Controllers
             // создаем объект ClaimsIdentity
             ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
             // установка аутентификационных куки
+
+            var accessToken = _tokenService.GenerateAccessToken(claims);
+            var refreshToken = _tokenService.GenerateRefreshToken();
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
+            db.SaveChanges();
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
+            var authenticatedResponse = new AuthenticatedResponse() { RefreshToken = refreshToken, Token = accessToken };
+            return authenticatedResponse;
         }
 
         public async Task<IActionResult> Logout()

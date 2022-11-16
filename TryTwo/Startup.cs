@@ -7,10 +7,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TryTwo.Services;
 
 namespace TryTwo
 {
@@ -26,9 +28,14 @@ namespace TryTwo
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            
+
+
             // services.AddControllersWithViews();
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<DBContext>(options => options.UseSqlServer(connection));
+            services.AddTransient<ITokenService, TokenService>();
+
 
             // установка конфигурации подключения
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -52,6 +59,8 @@ namespace TryTwo
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            IdentityModelEventSource.ShowPII = true;
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
